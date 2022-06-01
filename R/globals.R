@@ -1,0 +1,1 @@
+utils::globalVariables(c("z", "verbose", "exact", "f2","fExclude", "xNames"))
