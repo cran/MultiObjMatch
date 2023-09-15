@@ -160,19 +160,16 @@ values leading to more exploration.
 }
 \examples{
 data("lalonde", package="cobalt")
-psCols <- c("age", "educ", "married", "nodegree")
+psCols <- c("age", "educ", "married", "nodegree", "race")
 treatVal <- "treat"
-responseVal <- "re78"
-pairDistVal <- c("age", "married", "educ", "nodegree")
-exactVal <- c("educ")
+responseVal <- "re78"  
+pairDistVal <- c("age", "married", "educ", "nodegree", "race")
 myBalVal <- c("race")
-r1s <- c( 0.1, 0.3, 0.5, 0.7, 0.9,1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7)
-r2s <- c(0.01)
-matchResult <- distBalMatch(df=lalonde, treatCol=treatVal, myBalCol=myBalVal,
-rhoExclude =r1s, rhoBalance=r2s,
-distList=pairDistVal, exactlist=exactVal,
-propensityCols = psCols,ignore = c(responseVal), maxUnMatched = 0.1,
-caliperOption=NULL, toleranceOption=1e-1, maxIter=0, rho.max.f = 10)
+r1s <- c(0.01,1,2,4,4.4,5.2,5.4,5.6,5.8,6)
+r2s <- c(0.001)
+matchResult <- distBalMatch(df=lalonde, treatCol= treatVal, 
+myBalCol = myBalVal, rhoExclude=r1s, rhoBalance=r2s, distList = pairDistVal, 
+propensityCols = psCols, maxIter=0)
 }
 \seealso{
 Other main matching function: 

@@ -14,10 +14,6 @@ res1 <- distBalMatch(df=lalonde, treatCol= treatVal,myBalCol = myBalVal, rhoExcl
                                     toleranceOption=1e-1, maxIter=0, rho.max.f = 10)
 ## 1. Some successful check on function distBalMatch
 test_that("distBalMatch test with correct input", {
-  expect_equal(names(res1), c("dataTable", "rhoList", "matchList", "treatmentCol",
-                              "covs", "exactCovs", "idMapping", "stats", "b.var",
-                              "df", "pair_cost1", "pair_cost2", "version", "fPair",
-                              "fExclude", "fMarginal"))
   expect_equal(0, sum(unlist(lapply(res1, is.na))))
   expect_equal(res1$version, "Basic")
   expect_equal(length(res1$matchList), 13)

@@ -12,7 +12,11 @@ visualize(
   ylab = NULL,
   main = NULL,
   display_all = FALSE,
-  cond = NULL
+  cond = NULL,
+  xlim = NULL,
+  ylim = NULL,
+  display_index = TRUE,
+  average_cost = FALSE
 )
 }
 \arguments{
@@ -38,6 +42,21 @@ matches at quantiles of number of treated units being excluded.}
 \item{cond}{(optional) NULL by default, which denotes all the matches are
 shown; otherwise, takes a list of boolean values indicating whether to
 include each match}
+
+\item{xlim}{(optional) NULL by default; function automatically takes the max
+of the first objective function values being plotted on x-axis;
+if specified otherwise, pass in the numeric vector
+c(lower_bound, upper_bound)}
+
+\item{ylim}{(optional) NULL by default; function automatically takes the max
+of the first objective function values being plotted on y-axis;
+if specified otherwise, pass in the numeric vector
+c(lower_bound, upper_bound)}
+
+\item{display_index}{(optional) TRUE by default; whether to display match
+index}
+
+\item{average_cost}{(optional) FALSE by default; whether to show mean cost}
 }
 \value{
 No return value, called for visualization of match result

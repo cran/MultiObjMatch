@@ -1,7 +1,7 @@
 Package: MultiObjMatch
 Type: Package
 Title: Multi-Objective Matching Algorithm
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Shichao", "Han", email = "schan21@berkeley.edu", role = c("cre", "aut")),
     person("Samuel D.", "Pimentel", email = "spi@berkeley.edu", role = "aut"))
@@ -24,9 +24,9 @@ Suggests: testthat (>= 3.0.0), rrelaxiv
 Additional_repositories: https://errickson.net/rrelaxiv/
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2022-05-31 22:13:22 UTC; hanshichao
+Packaged: 2023-09-15 01:22:54 UTC; hanshichao
 Author: Shichao Han [cre, aut],
   Samuel D. Pimentel [aut]
 Maintainer: Shichao Han <schan21@berkeley.edu>
 Repository: CRAN
-Date/Publication: 2022-06-01 12:50:02 UTC
+Date/Publication: 2023-09-15 08:02:32 UTC

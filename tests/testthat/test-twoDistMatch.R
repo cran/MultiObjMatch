@@ -37,7 +37,7 @@ res6 <- twoDistMatch(df = df, treatCol = "z",
                      toleranceOption=1e-6, maxIter=3, rho.max.f = 10)
 ## 0. Check the correctness of the result 
 test_that("twoDistMatch test with correct input", {
-  expect_equal(names(res6), c("rhoList", "matchList", "treatmentCol",
+  expect_equal(names(res6), c("numTreat","rhoList", "matchList", "treatmentCol",
                               "covs", "exactCovs", "idMapping", "b.var",
                               "dataTable", "t", "df", "pair_cost1", "pair_cost2", "version", "fDist1",
                               "fExclude", "fDist2"))

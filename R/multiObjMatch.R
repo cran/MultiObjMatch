@@ -281,19 +281,16 @@ getExactOn <- function(dat, exactList) {
 #' @export
 #' @examples
 #' data("lalonde", package="cobalt")
-#' psCols <- c("age", "educ", "married", "nodegree")
+#' psCols <- c("age", "educ", "married", "nodegree", "race")
 #' treatVal <- "treat"
-#' responseVal <- "re78"
-#' pairDistVal <- c("age", "married", "educ", "nodegree")
-#' exactVal <- c("educ")
+#' responseVal <- "re78"  
+#' pairDistVal <- c("age", "married", "educ", "nodegree", "race")
 #' myBalVal <- c("race")
-#' r1s <- c( 0.1, 0.3, 0.5, 0.7, 0.9,1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7)
-#' r2s <- c(0.01)
-#' matchResult <- distBalMatch(df=lalonde, treatCol=treatVal, myBalCol=myBalVal,
-#' rhoExclude =r1s, rhoBalance=r2s,
-#' distList=pairDistVal, exactlist=exactVal,
-#' propensityCols = psCols,ignore = c(responseVal), maxUnMatched = 0.1,
-#' caliperOption=NULL, toleranceOption=1e-1, maxIter=0, rho.max.f = 10)
+#' r1s <- c(0.01,1,2,4,4.4,5.2,5.4,5.6,5.8,6)
+#' r2s <- c(0.001)
+#' matchResult <- distBalMatch(df=lalonde, treatCol= treatVal, 
+#' myBalCol = myBalVal, rhoExclude=r1s, rhoBalance=r2s, distList = pairDistVal, 
+#' propensityCols = psCols, maxIter=0)
 distBalMatch <-
   function(df,
            treatCol,
@@ -330,7 +327,7 @@ distBalMatch <-
     ## 0. Data preprocessing
     result <- structure(list(), class = 'multiObjMatch')
     dat = df
-    result$dataTable = dat
+    
     dat$originalID = 1:nrow(df)
     dat$tempSorting = df[, treatCol]
     dat = dat[order(-dat$tempSorting), ]
@@ -342,7 +339,8 @@ distBalMatch <-
     
     #dat['response'] = df[responseCol]
     dat['treat'] = df[treatCol]
-    
+    result$dataTable = dat
+    result$numTreat <- sum(dat$treat)
     ## 1. Fit a propensity score model if the propensity score is not passed in
     if (is.null(pScores)) {
       if (is.null(propensityCols)) {
@@ -703,6 +701,7 @@ distBalMatch <-
     }
     result$exactCovs = exactlist
     result$idMapping = dat$originalID
+    result$dataTable = dat
     result$stats = my.stats1
     result$b.var = myBalCol
     result$df = df
@@ -961,7 +960,7 @@ twoDistMatch <-
     dat['treat'] = df[treatCol]
     
     result <- structure(list(), class = 'multiObjMatch')
-    
+    #result$dataTable <- dat
     ## 1. Fit a propensity score model if the propensity score is not passed in
     if (is.null(pScores)) {
       if (is.null(propensityCols)) {
@@ -993,7 +992,7 @@ twoDistMatch <-
     
     ## 2. Construct nets
     base.net <- netFlowMatch(dat$treat)
-    
+    result$numTreat <- sum(dat$treat)
     ## 3. Define distance and cost
     
     dist.i <- build.dist.struct(
@@ -1804,13 +1803,19 @@ matched_index <- function(matchingResult) {
 #' dType2="User", myBalCol=c("x5"), rhoExclude=r1ss, rhoDistance=r2ss,
 #' propensityCols = c("x1")) 
 #' matchedData(matchResult1, 1)
-matchedData <- function(matchingResult, match_num) {
-  matched_idx <- matched_index(matchingResult)
-  treated_idx <- matched_idx[[as.character(match_num)]]$treated
-  control_idx <- matched_idx[[as.character(match_num)]]$control
-  return(matchingResult$df[c(treated_idx, control_idx), ])
+matchedData <- function(matchingResult, match_num){
+  df_tmp <- matchingResult$dataTable
+  total_treated <- sum(df_tmp[matchingResult$treatmentCol])
+  #df_tmp$tempSorting = df_tmp[,matchingResult$treatmentCol]
+  #df_tmp = df_tmp[order(-df_tmp$tempSorting),]
+  df_match_1 <- data.frame(matchingResult$matchList[[toString(match_num)]])
+  df_treated <- df_tmp[as.character(rownames(df_match_1)), ] 
+  df_treated$matchID <- 1:nrow(df_treated)
+  df_control <- df_tmp[as.character(df_match_1$X1 + total_treated), ]
+  df_control$matchID <- 1:nrow(df_control)
+  res_df <- rbind(df_treated, df_control)
+  return(res_df)
 }
-
 
 #' Get unmatched percentage
 #' @description A function that generate the percentage of unmatched units for
@@ -2076,7 +2081,18 @@ convert_names <- function(x, y) {
 #' @param cond (optional) NULL by default, which denotes all the matches are
 #'   shown; otherwise, takes a list of boolean values indicating whether to
 #'   include each match
-#'
+#' @param xlim (optional) NULL by default; function automatically takes the max 
+#'   of the first objective function values being plotted on x-axis; 
+#'   if specified otherwise, pass in the numeric vector 
+#'   c(lower_bound, upper_bound)
+#' @param ylim (optional) NULL by default; function automatically takes the max 
+#'   of the first objective function values being plotted on y-axis; 
+#'   if specified otherwise, pass in the numeric vector 
+#'   c(lower_bound, upper_bound)
+#' @param display_index (optional) TRUE by default; whether to display match 
+#'   index   
+#' @param average_cost (optional) FALSE by default; whether to show mean cost 
+#'     
 #' @return No return value, called for visualization of match result
 #' @details   By default, the plotting function will show the tradeoff between
 #'   the first distance objective function and the marginal balance (if
@@ -2112,7 +2128,11 @@ visualize <-
            ylab = NULL,
            main = NULL,
            display_all = FALSE,
-           cond = NULL) {
+           cond = NULL, 
+           xlim = NULL,
+           ylim = NULL,
+           display_index = TRUE,
+           average_cost = FALSE) {
     if (x_axis == "dist1" &&
         y_axis == "dist2" && matchingResult$version == "Basic") {
       x_axis = "pair"
@@ -2151,9 +2171,11 @@ visualize <-
     
     rho_obj_table <- generateRhoObj(matchingResult)
     if (!is.null(cond)) {
-      rho_obj_table <- rho_obj_table[cond, ]
+      rho_obj_table <- rho_obj_table[cond,]
     }
-    sorted_table <- rho_obj_table %>% arrange(fExclude)
+    sorted_table <- rho_obj_table %>% arrange(as.numeric(fExclude))
+    
+    
     inds <- as.vector(sorted_table[["match_index"]])
     if (nrow(sorted_table) > 5 && display_all == FALSE) {
       inds <- inds[as.integer(quantile(1:length(inds)))]
@@ -2167,8 +2189,39 @@ visualize <-
       }
     }
     
+    if(display_index == FALSE){
+      for(i in 1:length(graph_labels)){
+        graph_labels[i] = " "
+      }
+    }
+
+    
     f_x <- as.numeric(as.vector(sorted_table[[x_axis]]))
     f_y <- as.numeric(as.vector(sorted_table[[y_axis]]))
+    if(average_cost==TRUE){
+      totalMatchedTreated = matchingResult$numTreat - 
+        as.numeric(sorted_table$fExclude)
+      if(x_axis!='fExclude'){
+        f_x = f_x / totalMatchedTreated 
+      }
+      if(y_axis!='fExlude'){
+        f_y = f_y / totalMatchedTreated 
+      }
+    }
+    
+    if(is.null(xlim)){
+      my_xlim <- c(0, max(f_x))
+    } else {
+      my_xlim <- xlim
+    }
+    
+    if(is.null(ylim)){
+      my_ylim <- c(0, max(f_y))
+    } else {
+      my_ylim <- ylim
+    }
+    
+    
     plot(
       f_x,
       f_y,
@@ -2177,8 +2230,8 @@ visualize <-
       ylab = ylab,
       main = main,
       cex = 1.2,
-      xlim = c(0, max(f_x)),
-      ylim = c(0, max(f_y)),
+      xlim = my_xlim,
+      ylim = my_ylim,
       cex.lab = 1.2,
       cex.axis = 1.2,
       col = rgb(0, 0, 0, 0.3)

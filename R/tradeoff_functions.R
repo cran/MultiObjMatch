@@ -7,7 +7,7 @@
 #' @param cols the input numeric vector corresponding to control units
 #' @param rows the input numeric vector corresponding to treated units
 #' @param colnames (optional) vector containing names for all control units
-#' @param rownames (optional) vectpr containing names for all treated units
+#' @param rownames (optional) vector containing names for all treated units
 #' @param dimension (optional) vector of number of treated and control units
 #' @param call (optional) funtion call used to create the InfinitySparseMatrix
 #'

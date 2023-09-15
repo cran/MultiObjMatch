@@ -23,7 +23,7 @@ makeInfinitySparseMatrix(
 
 \item{colnames}{(optional) vector containing names for all control units}
 
-\item{rownames}{(optional) vectpr containing names for all treated units}
+\item{rownames}{(optional) vector containing names for all treated units}
 
 \item{dimension}{(optional) vector of number of treated and control units}
 

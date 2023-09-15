@@ -1,13 +1,14 @@
-0011936189eac594606fa20132cb3c6f *DESCRIPTION
+ea73a8ccf6ef9a99dc4e0d75e339483b *DESCRIPTION
 74c5fb440e89bef39a075efe38d9e6d3 *LICENSE
 ebc7d612a0f40410cbd105ed602db30b *NAMESPACE
+ee039d2bdeee21cf571843af53a6d7b9 *NEWS.md
 d8f7894ea39451b64687033c64ea9b92 *R/descr_stats.R
 ed17953cafc634d263bd81f44f73237d *R/dist_funcs.R
 4a5074205a71d73d798cde1f0a596efe *R/globals.R
-74b52182ea83081d87f331334bc403cb *R/multiObjMatch.R
+4718b156358ef30ad9411a6ff6af02b5 *R/multiObjMatch.R
 8a61972bd39d81842dae70645686c6ae *R/my_dummy.R
 f9513e4bfa5a0ff393b9177bb76b9a51 *R/prep_code.R
-c81dc40ef790f57833bef11c5e563ae1 *R/tradeoff_functions.R
+254fc7fa1af5d804bcc31fa9639d3982 *R/tradeoff_functions.R
 71f6bc2bb1336c94c24a1613d8425209 *man/addBalance.Rd
 04f8c94a656a5094eb87fb542c18596b *man/addExclusion.Rd
 113db9c64b3e6bc541eab26239860c41 *man/balanceCosts.Rd
@@ -22,7 +23,7 @@ f8fb177b85fccbb1f0bd94f0b5b1d559 *man/compareTables.Rd
 a9e2e532eb8a802475c62a209ba9d416 *man/costSkeleton.Rd
 034a73eaaffc10678dc1c4c024eedbde *man/data_precheck.Rd
 baaf96aeb030d2ffc889006bd7750ab9 *man/descr.stats_general.Rd
-ce0880c029d92efdc75a05d3672a9edd *man/distBalMatch.Rd
+398fc6d32706949f6ab79d48fb4bb1d5 *man/distBalMatch.Rd
 fb63ec10d85cadf58695f341d85e0898 *man/distanceFunctionHelper.Rd
 58a161f471ee3e28b4974e8b1464518c *man/dummy.Rd
 e46e60f11d48b9add9b50425eca942bc *man/edgelist2ISM.Rd
@@ -40,7 +41,7 @@ ff89cf5e4a5dd9227c33ef94b540c034 *man/generate_rhos.Rd
 b4316ad4030414cebd50eaf448416c07 *man/getPropensityScore.Rd
 8038b2ea14e3b4d5d5184abce6d659b7 *man/getUnmatched.Rd
 fb456407554c018aa3dfb6998b305865 *man/get_five_index.Rd
-db92b9fe924d6df52a4bb63cb19592de *man/makeInfinitySparseMatrix.Rd
+82b38ba830ec2a73fed6a653dcf98c7f *man/makeInfinitySparseMatrix.Rd
 b8c610970d599aeaa2d65f2cdcb884ce *man/makeSparse.Rd
 47646a91abe89ec68bfb8e05d176ff08 *man/matchedData.Rd
 be64250506e2147686e14a86bfc91cb7 *man/matched_index.Rd
@@ -54,8 +55,8 @@ e9796466d82aa972fcb6d07e28e53bad *man/netFlowMatch.Rd
 1fc74dc5b938d718ee2b55337f57e899 *man/solveP.Rd
 14d145985d612d12f3aa67dd5b97fa2c *man/solveP1.Rd
 16e4ab9737766361dd4e4c52c71a6377 *man/twoDistMatch.Rd
-207a557c1bddc25dca9d8cf6796d0c89 *man/visualize.Rd
+e539821bd8c3e1c80afa65a87ec5ce23 *man/visualize.Rd
 cfe5355d0d144ccb50b2fe1d240de6d7 *tests/testthat.R
-50993a4a13efcdb3c2d832968fec72b8 *tests/testthat/test-distBal.R
+beadd01e557942e7e4427b314816c099 *tests/testthat/test-distBal.R
 ad98f19183cbc9cb2bfbd9a01d9d1780 *tests/testthat/test-multiObjMatch.R
-e558033747aab3f333f62f05c5f4601b *tests/testthat/test-twoDistMatch.R
+6bcbf2485f655173d03db03865c60a5a *tests/testthat/test-twoDistMatch.R
