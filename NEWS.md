@@ -1,3 +1,7 @@
+# MultiObjMatch 0.1.2 (2023-09-15)
+* Add more flexible graphing options 
+* Add more examples to the upcoming paper 
+
 # MultiObjMatch 0.1.1 (2023-09-14)
 
 * Changed the parameter names in `distBalMatch()` 
