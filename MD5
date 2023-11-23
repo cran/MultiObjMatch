@@ -1,11 +1,11 @@
-a8b12c00f00d725bcdff12bbcbf2ff85 *DESCRIPTION
+9f9eb7e5eefdc64bbeb21b06bebc40be *DESCRIPTION
 74c5fb440e89bef39a075efe38d9e6d3 *LICENSE
 ebc7d612a0f40410cbd105ed602db30b *NAMESPACE
-ce75c193bee8c1724b9f865699b1dea4 *NEWS.md
+4beb88f264d1e691fcc2d4ac36b5ca36 *NEWS.md
 d8f7894ea39451b64687033c64ea9b92 *R/descr_stats.R
 ed17953cafc634d263bd81f44f73237d *R/dist_funcs.R
 4a5074205a71d73d798cde1f0a596efe *R/globals.R
-43b928e897768abc62f15c8d8915468b *R/multiObjMatch.R
+0b4ff062e516355804c7020dd3961d7f *R/multiObjMatch.R
 8a61972bd39d81842dae70645686c6ae *R/my_dummy.R
 f9513e4bfa5a0ff393b9177bb76b9a51 *R/prep_code.R
 254fc7fa1af5d804bcc31fa9639d3982 *R/tradeoff_functions.R
@@ -59,4 +59,4 @@ a0ff943e3d44d09a13ab03b6490d10f2 *man/visualize.Rd
 cfe5355d0d144ccb50b2fe1d240de6d7 *tests/testthat.R
 beadd01e557942e7e4427b314816c099 *tests/testthat/test-distBal.R
 ad98f19183cbc9cb2bfbd9a01d9d1780 *tests/testthat/test-multiObjMatch.R
-6bcbf2485f655173d03db03865c60a5a *tests/testthat/test-twoDistMatch.R
+097aac14b8f843f4345985d22f1933d8 *tests/testthat/test-twoDistMatch.R

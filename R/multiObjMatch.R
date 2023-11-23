@@ -508,79 +508,50 @@ distBalMatch <-
     percentageUnmatched <-
       1 - as.vector(laply(match.list, nrow) / sum(dat[, treatCol]))
     minInd <- which.min(percentageUnmatched)
+    maxInd <- which.max(percentageUnmatched)
     bestRhoInd <- tempRhos[minInd]
+    bestRhoInd_max <- tempRhos[maxInd]
     bestPercentageSoFar <- as.vector(percentageUnmatched)[minInd]
+    bestPercentageSoFar_max <- as.vector(percentageUnmatched)[maxInd]
     bestRho1 <- rho_list[[bestRhoInd]][1]
     bestRho2 <- rho_list[[bestRhoInd]][2]
+    bestRho1_max <- rho_list[[bestRhoInd_max]][1]
+    bestRho2_max <- rho_list[[bestRhoInd_max]][2]
     ind = length(rho_list) + 1
     while ((bestPercentageSoFar > maxUnMatched) &
            (numIter <= maxIter)) {
-      if (is.finite(log10(bestRho1)) & is.finite(log10(bestRho2))) {
-        proposedNewRho1s <-
-          c(runif(2, 0, 2), 0.5 * 
-              (-c((abs(rnorm(1)) * 0.01 + bestRho1 / 10):floor(log10(bestRho1))
-          )), 0.5 * (-c(
-            abs(rnorm(1)) * 0.01 + bestRho1:log10(bestRho1 + 
-                                                    0.01 * abs(rnorm(1))) *
-              10
-          )))
-        
-        proposedNewRho2s <-
-          c(runif(2, 0, 2), 0.5 * 
-              (-c((abs(rnorm(1)) * 0.01 + bestRho2 / 10):floor(log10(bestRho2))
-          )), 0.5 * (-c(
-            abs(rnorm(1)) * 0.01 + bestRho2:log10(bestRho2 + 
-                                                    0.01 * abs(rnorm(1))) *
-              10
-          )))
-      } else {
-        proposedNewRho1s <-
-          c(rnorm(1) * 1e-1, rnorm(1) * 1e2, rnorm(1) * 1e3, runif(2, 0, 2))
-        proposedNewRho2s <-
-          c(rnorm(1) * 1e-1, rnorm(1) * 1e2, rnorm(1) * 1e3, runif(2, 0, 2))
-      }
       
-      proposedNewRho1s <- proposedNewRho1s[proposedNewRho1s >= 0]
-      proposedNewRho2s <- proposedNewRho2s[proposedNewRho2s >= 0]
+      rho1_search_min <- 0.1 * bestRho1 
+      rho1_search_max <- 10 * bestRho1 
+      rho2_search_min <- 0.1 * bestRho2 
+      rho2_search_max <- 10 * bestRho2 
+      r1_range <- rho1_search_max - rho1_search_min
+      new_r1s <- seq(rho1_search_min,rho1_search_max, r1_range/3)
+      r2_range <- rho2_search_max - rho2_search_min
+      new_r2s <- seq(rho2_search_min,rho2_search_max, r2_range/3)
+
+      
+      rho1_search_min_max <- 0.1 * bestRho1_max 
+      rho1_search_max_max <- 10 * bestRho1_max 
+      rho2_search_min_max <- 0.1 * bestRho2_max 
+      rho2_search_max_max <- 10 * bestRho2_max 
+      r1_range_max <- rho1_search_max_max - rho1_search_min_max
+      new_r1s_max <- seq(rho1_search_min_max,rho1_search_max_max, r1_range_max/3)
+      r2_range_max <- rho2_search_max_max - rho2_search_min_max
+      new_r2s_max <- seq(rho2_search_min_max,rho2_search_max_max, r2_range_max/3)
+
+      proposedNewRho1s <- c(10 *max(new_r1s), new_r1s)
+      proposedNewRho2s <- c(10 *max(new_r2s), new_r2s)
       
       for (r1 in proposedNewRho1s) {
-        rho_list[[ind]] = c(r1, bestRho2)
+        for(r2 in proposedNewRho2s){
+        rho_list[[ind]] = c(r1, r2)
         temp.sol <- solveP1(
           net.i,
           f1list,
           f2list,
           f3list,
           rho1 = r1,
-          rho2 = bestRho2,
-          tol = toleranceOption
-        )
-        
-        solutions[[as.character(ind)]] <- temp.sol$x
-        solution.nets[[as.character(ind)]] <- temp.sol$net
-        print(paste('Matches finished for rho1 = ', 
-                    r1, " and rho2 = ", bestRho2))
-        if (is.null(temp.sol$x)) {
-          print(
-            paste(
-              'However, rho1 = ',
-              r1,
-              " and rho2 = ",
-              bestRho2,
-              " results in empty matching."
-            )
-          )
-        }
-        ind = ind + 1
-      }
-      
-      for (r2 in proposedNewRho2s) {
-        rho_list[[ind]] = c(bestRho1, r2)
-        temp.sol <- solveP1(
-          net.i,
-          f1list,
-          f2list,
-          f3list,
-          rho1 = bestRho1,
           rho2 = r2,
           tol = toleranceOption
         )
@@ -588,20 +559,56 @@ distBalMatch <-
         solutions[[as.character(ind)]] <- temp.sol$x
         solution.nets[[as.character(ind)]] <- temp.sol$net
         print(paste('Matches finished for rho1 = ', 
-                    bestRho1, " and rho2 = ", r2))
+                    r1, " and rho2 = ", r2))
         if (is.null(temp.sol$x)) {
           print(
             paste(
               'However, rho1 = ',
-              bestRho1,
+              r1,
               " and rho2 = ",
               r2,
               " results in empty matching."
             )
           )
         }
-        ind = ind + 1
+        ind = ind + 1}
       }
+
+      
+      proposedNewRho1s <- c(0.1 *min(new_r1s_max),new_r1s_max)
+      proposedNewRho2s <- c(0.1 *min(new_r2s_max),new_r2s_max)
+      
+      for (r1 in proposedNewRho1s) {
+        for(r2 in proposedNewRho2s){
+          rho_list[[ind]] = c(r1, r2)
+          temp.sol <- solveP1(
+            net.i,
+            f1list,
+            f2list,
+            f3list,
+            rho1 = r1,
+            rho2 = r2,
+            tol = toleranceOption
+          )
+          
+          solutions[[as.character(ind)]] <- temp.sol$x
+          solution.nets[[as.character(ind)]] <- temp.sol$net
+          print(paste('Matches finished for rho1 = ', 
+                      r1, " and rho2 = ", r2))
+          if (is.null(temp.sol$x)) {
+            print(
+              paste(
+                'However, rho1 = ',
+                r1,
+                " and rho2 = ",
+                r2,
+                " results in empty matching."
+              )
+            )
+          }
+          ind = ind + 1}
+      }
+
       
       match.list <-
         obj.to.match(
@@ -627,19 +634,40 @@ distBalMatch <-
       percentageUnmatched <-
         1 - as.vector(laply(match.list, nrow) / sum(dat[, treatCol]))
       oldMinInd <- minInd
+      oldMaxInd <- maxInd
       minInd <- which.min(percentageUnmatched[-oldMinInd])
+      maxInd <- which.max(percentageUnmatched[-oldMaxInd])
       if (minInd >= oldMinInd) {
         minInd = minInd + 1
       }
+      
+
+
+
+      bestRho1 <- rho_list[[bestRhoInd]][1]
+      bestRho2 <- rho_list[[bestRhoInd]][2]
+      bestRho1_max <- rho_list[[bestRhoInd_max]][1]
+      bestRho2_max <- rho_list[[bestRhoInd_max]][2]
+      
       bestRhoInd <- tempRhos[minInd]
+      bestRhoInd_max <- tempRhos[maxInd]
       bestPercentageSoFar <- as.vector(percentageUnmatched)[minInd]
+      bestPercentageSoFar_max <- as.vector(percentageUnmatched)[maxInd]
       if (sum(percentageUnmatched == bestPercentageSoFar) > 1) {
         bestRhoInd <-
           sample(which(percentageUnmatched == bestPercentageSoFar),
                  size = 1)
       }
+      
+      if (sum(percentageUnmatched == bestPercentageSoFar_max) > 1) {
+        bestRhoInd_max <-
+          sample(which(percentageUnmatched == bestPercentageSoFar_max),
+                 size = 1)
+      }
       bestRho1 <- rho_list[[bestRhoInd]][1]
       bestRho2 <- rho_list[[bestRhoInd]][2]
+      bestRho1_max <- rho_list[[bestRhoInd_max]][1]
+      bestRho2_max <- rho_list[[bestRhoInd_max]][2]
       
       numIter = numIter + 1
     }
@@ -1102,104 +1130,113 @@ twoDistMatch <-
     numIter = 1
     
     
+    
     tempRhos <- as.numeric(names(match.list))
     percentageUnmatched <-
       1 - as.vector(laply(match.list, nrow) / sum(dat[, treatCol]))
     minInd <- which.min(percentageUnmatched)
+    maxInd <- which.max(percentageUnmatched)
     bestRhoInd <- tempRhos[minInd]
+    bestRhoInd_max <- tempRhos[maxInd]
     bestPercentageSoFar <- as.vector(percentageUnmatched)[minInd]
+    bestPercentageSoFar_max <- as.vector(percentageUnmatched)[maxInd]
     bestRho1 <- rho_list[[bestRhoInd]][1]
     bestRho2 <- rho_list[[bestRhoInd]][2]
+    bestRho1_max <- rho_list[[bestRhoInd_max]][1]
+    bestRho2_max <- rho_list[[bestRhoInd_max]][2]
     ind = length(rho_list) + 1
     while ((bestPercentageSoFar > maxUnMatched) &
            (numIter <= maxIter)) {
-      if (is.finite(log10(bestRho1)) & is.finite(log10(bestRho2))) {
-        proposedNewRho1s <-
-          c(runif(2, 0, 2), 0.5 * 
-              (-c((abs(rnorm(1)) * 0.01 + bestRho1 / 10):floor(log10(bestRho1))
-          )), 0.5 * 
-            (-c(abs(rnorm(1)) * 0.01 + bestRho1:log10(bestRho1 + 
-                                                        0.01 * abs(rnorm(1))) *
-              10
-          )))
-        
-        proposedNewRho2s <-
-          c(runif(2, 0, 2), 0.5 * 
-              (-c((abs(rnorm(1)) * 0.01 + bestRho2 / 10):floor(log10(bestRho2))
-          )), 0.5 * (-c(
-            abs(rnorm(1)) * 0.01 + bestRho2:log10(bestRho2 + 
-                                                    0.01 * abs(rnorm(1))) *
-              10
-          )))
-      } else {
-        proposedNewRho1s <-
-          c(rnorm(1) * 1e-1, rnorm(1) * 1e2, rnorm(1) * 1e3, runif(2, 0, 2))
-        proposedNewRho2s <-
-          c(rnorm(1) * 1e-1, rnorm(1) * 1e2, rnorm(1) * 1e3, runif(2, 0, 2))
-      }
       
-      proposedNewRho1s <- proposedNewRho1s[proposedNewRho1s >= 0]
-      proposedNewRho2s <- proposedNewRho2s[proposedNewRho2s >= 0]
+      rho1_search_min <- 0.1 * bestRho1 
+      rho1_search_max <- 10 * bestRho1 
+      rho2_search_min <- 0.1 * bestRho2 
+      rho2_search_max <- 10 * bestRho2 
+      r1_range <- rho1_search_max - rho1_search_min
+      new_r1s <- seq(rho1_search_min,rho1_search_max, r1_range/3)
+      r2_range <- rho2_search_max - rho2_search_min
+      new_r2s <- seq(rho2_search_min,rho2_search_max, r2_range/3)
+      
+      
+      rho1_search_min_max <- 0.1 * bestRho1_max 
+      rho1_search_max_max <- 10 * bestRho1_max 
+      rho2_search_min_max <- 0.1 * bestRho2_max 
+      rho2_search_max_max <- 10 * bestRho2_max 
+      r1_range_max <- rho1_search_max_max - rho1_search_min_max
+      new_r1s_max <- seq(rho1_search_min_max,rho1_search_max_max, r1_range_max/3)
+      r2_range_max <- rho2_search_max_max - rho2_search_min_max
+      new_r2s_max <- seq(rho2_search_min_max,rho2_search_max_max, r2_range_max/3)
+      
+      
+      proposedNewRho1s <- c(0.1 *max(new_r1s),new_r1s)
+      proposedNewRho2s <- c(0.1 *max(new_r2s),new_r2s)
       
       for (r1 in proposedNewRho1s) {
-        rho_list[[ind]] = c(r1, bestRho2)
-        temp.sol <- solveP1(
-          net.i,
-          f1list,
-          f2list,
-          f3list,
-          rho1 = r1,
-          rho2 = bestRho2,
-          tol = toleranceOption
-        )
-        
-        solutions[[as.character(ind)]] <- temp.sol$x
-        solution.nets[[as.character(ind)]] <- temp.sol$net
-        print(paste('Matches finished for rho1 = ', r1, 
-                    " and rho2 = ", bestRho2))
-        if (is.null(temp.sol$x)) {
-          print(
-            paste(
-              'However, rho1 = ',
-              r1,
-              " and rho2 = ",
-              bestRho2,
-              " results in empty matching."
-            )
+        for(r2 in proposedNewRho2s){
+          rho_list[[ind]] = c(r1, r2)
+          temp.sol <- solveP1(
+            net.i,
+            f1list,
+            f2list,
+            f3list,
+            rho1 = r1,
+            rho2 = r2,
+            tol = toleranceOption
           )
-        }
-        ind = ind + 1
+          
+          solutions[[as.character(ind)]] <- temp.sol$x
+          solution.nets[[as.character(ind)]] <- temp.sol$net
+          print(paste('Matches finished for rho1 = ', 
+                      r1, " and rho2 = ", r2))
+          if (is.null(temp.sol$x)) {
+            print(
+              paste(
+                'However, rho1 = ',
+                r1,
+                " and rho2 = ",
+                r2,
+                " results in empty matching."
+              )
+            )
+          }
+          ind = ind + 1}
       }
       
-      for (r2 in proposedNewRho2s) {
-        rho_list[[ind]] = c(bestRho1, r2)
-        temp.sol <- solveP1(
-          net.i,
-          f1list,
-          f2list,
-          f3list,
-          rho1 = bestRho1,
-          rho2 = r2,
-          tol = toleranceOption
-        )
-        
-        solutions[[as.character(ind)]] <- temp.sol$x
-        solution.nets[[as.character(ind)]] <- temp.sol$net
-        print(paste('Matches finished for rho1 = ', 
-                    bestRho1, " and rho2 = ", r2))
-        if (is.null(temp.sol$x)) {
-          print(
-            paste(
-              'However, rho1 = ',
-              bestRho1,
-              " and rho2 = ",
-              r2,
-              " results in empty matching."
-            )
+      
+      proposedNewRho1s <- c(0.1 *min(new_r1s_max),new_r1s_max)
+      proposedNewRho2s <- c(0.1 *min(new_r2s_max),new_r2s_max)
+      
+      for (r1 in proposedNewRho1s) {
+        for(r2 in proposedNewRho2s){
+          rho_list[[ind]] = c(r1, r2)
+          temp.sol <- solveP1(
+            net.i,
+            f1list,
+            f2list,
+            f3list,
+            rho1 = r1,
+            rho2 = r2,
+            tol = toleranceOption
           )
-        }
-        ind = ind + 1
+          
+          solutions[[as.character(ind)]] <- temp.sol$x
+          solution.nets[[as.character(ind)]] <- temp.sol$net
+          print(paste('Matches finished for rho1 = ', 
+                      r1, " and rho2 = ", r2))
+          if (is.null(temp.sol$x)) {
+            print(
+              paste(
+                'However, rho1 = ',
+                r1,
+                " and rho2 = ",
+                r2,
+                " results in empty matching."
+              )
+            )
+          }
+          ind = ind + 1}
       }
+      
       
       match.list <-
         obj.to.match(
@@ -1225,19 +1262,40 @@ twoDistMatch <-
       percentageUnmatched <-
         1 - as.vector(laply(match.list, nrow) / sum(dat[, treatCol]))
       oldMinInd <- minInd
+      oldMaxInd <- maxInd
       minInd <- which.min(percentageUnmatched[-oldMinInd])
+      maxInd <- which.max(percentageUnmatched[-oldMaxInd])
       if (minInd >= oldMinInd) {
         minInd = minInd + 1
       }
+      
+      
+      
+      
+      bestRho1 <- rho_list[[bestRhoInd]][1]
+      bestRho2 <- rho_list[[bestRhoInd]][2]
+      bestRho1_max <- rho_list[[bestRhoInd_max]][1]
+      bestRho2_max <- rho_list[[bestRhoInd_max]][2]
+      
       bestRhoInd <- tempRhos[minInd]
+      bestRhoInd_max <- tempRhos[maxInd]
       bestPercentageSoFar <- as.vector(percentageUnmatched)[minInd]
+      bestPercentageSoFar_max <- as.vector(percentageUnmatched)[maxInd]
       if (sum(percentageUnmatched == bestPercentageSoFar) > 1) {
         bestRhoInd <-
           sample(which(percentageUnmatched == bestPercentageSoFar),
                  size = 1)
       }
+      
+      if (sum(percentageUnmatched == bestPercentageSoFar_max) > 1) {
+        bestRhoInd_max <-
+          sample(which(percentageUnmatched == bestPercentageSoFar_max),
+                 size = 1)
+      }
       bestRho1 <- rho_list[[bestRhoInd]][1]
       bestRho2 <- rho_list[[bestRhoInd]][2]
+      bestRho1_max <- rho_list[[bestRhoInd_max]][1]
+      bestRho2_max <- rho_list[[bestRhoInd_max]][2]
       
       numIter = numIter + 1
     }

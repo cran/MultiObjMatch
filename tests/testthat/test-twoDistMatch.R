@@ -43,7 +43,7 @@ test_that("twoDistMatch test with correct input", {
                               "fExclude", "fDist2"))
   expect_equal(0, sum(unlist(lapply(res6, is.na))))
   expect_equal(res6$version, "Advanced")
-  expect_equal(length(res6$matchList), 104)
+  expect_equal(length(res6$matchList), 236)
   expect_equal(length(res6$fDist1), length(res6$fDist2))
   expect_equal(length(res6$fDist1), length(res6$fExclude))
 })
@@ -54,7 +54,7 @@ test_that("twoDistMatch test with correct input", {
 test_that("Some tabular summary functions only works for the basic version", {
   expect_error(compareMatching(res6))
   summary_table <- generateRhoObj(res6)
-  expect_equal(dim(summary_table)[1], 104)
+  expect_equal(dim(summary_table)[1], 236)
   expect_equal(dim(summary_table)[2], 7)
 })
 
