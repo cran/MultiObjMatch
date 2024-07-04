@@ -9,7 +9,7 @@ matched_index(matchingResult)
 }
 \arguments{
 \item{matchingResult}{an object returned by the main matching function
-distBalMatch}
+dist_bal_match}
 }
 \description{
 An internal helper function that translate the matching index in the sorted

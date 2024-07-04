@@ -5,11 +5,13 @@
 \title{Visualize tradeoffs}
 \usage{
 visualize(
-  matchingResult,
+  matching_result,
   x_axis = "dist1",
   y_axis = "dist2",
+  z_axis = NULL,
   xlab = NULL,
   ylab = NULL,
+  zlab = NULL,
   main = NULL,
   display_all = FALSE,
   cond = NULL,
@@ -20,18 +22,25 @@ visualize(
 )
 }
 \arguments{
-\item{matchingResult}{the matching result returned by either distBalMatch or
-twoDistMatch.}
+\item{matching_result}{the matching result returned by either dist_bal_match or
+two_dist_match.}
 
 \item{x_axis}{character, naming the objective function shown on x-axis; one
-of ("pair", "marginal", "dist1", "dist2", "exclude"), "dist1" by default.}
+of ("pair", "marginal", "dist1", "dist2", "exclude", "distance_penalty", "balance_penalty",
+"dist1_penalty", "dist2_penalty", "exclusion_penalty"), "dist1" by default.}
 
 \item{y_axis}{character, naming the objective function shown on y-axis; one
-of ("pair", "marginal", "dist1", "dist2", "exclude"), "dist2" by default.}
+of ("pair", "marginal", "dist1", "dist2", "exclude", "distance_penalty", "balance_penalty",
+"dist1_penalty", "dist2_penalty", "exclusion_penalty"), "dist1" by default.}
+
+\item{z_axis}{character, naming the objective function for coloring; one
+of ("pair", "marginal", "dist1", "dist2", "exclude"), "exclude" by default.}
 
 \item{xlab}{(optional) the axis label for x-axis; NULL by default.}
 
 \item{ylab}{(optional) the axis label for y-axis; NULL by default.}
+
+\item{zlab}{(optional) the axis label for z-axis; NULL by default.}
 
 \item{main}{(optional) the title of the graph; NULL by default.}
 
@@ -63,28 +72,12 @@ No return value, called for visualization of match result
 }
 \description{
 Main visualization functions for showing the tradeoffs between
-two of the three objective functions.
+two of the three objective functions. A 3-d plot can be visualized
+where the third dimension is represented by coloring of the dots.
 }
 \details{
 By default, the plotting function will show the tradeoff between
 the first distance objective function and the marginal balance (if
-distBalMatch) is used; or simply the second distance objective function, if
-twoDistMatch is used.
-}
-\examples{
-## Generate matches
-data("lalonde", package="cobalt")
-psCols <- c("age", "educ", "married", "nodegree", "race")
-treatVal <- "treat"
-responseVal <- "re78"  
-pairDistVal <- c("age", "married", "educ", "nodegree", "race")
-myBalVal <- c("race")
-r1s <- c(0.01,1,2,4,4.4,5.2,5.4,5.6,5.8,6)
-r2s <- c(0.001)
-matchResult <- distBalMatch(df=lalonde, treatCol= treatVal, 
-myBalCol = myBalVal, rhoExclude=r1s, rhoBalance=r2s, distList = pairDistVal, 
-propensityCols = psCols, maxIter=0)
-## Visualization
-visualize(matchResult, "marginal", "exclude")
-visualize(matchResult, "pair", "exclude")
+dist_bal_match) is used; or simply the second distance objective function, if
+two_dist_match is used.
 }

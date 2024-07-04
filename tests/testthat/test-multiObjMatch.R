@@ -11,14 +11,20 @@ r1s <- seq(0.1, 10, 0.5)
 r2s <- c(0.001)
 
 
-res1 <- distBalMatch(df=lalonde, treatCol= treatVal,myBalCol = myBalVal, rhoExclude=r1s, rhoBalance=r2s, distList = pairDistVal, exactlist = exactVal, propensityCols = psCols, ignore = c(responseVal), maxUnMatched = 0.1, caliperOption=NULL, 
-                     toleranceOption=1e-1, maxIter=0, rho.max.f = 10)
+res1 <- dist_bal_match(data=lalonde, treat_col= treatVal,marg_bal_col = myBalVal, 
+                     exclusion_penalty=r1s, balance_penalty=r2s, 
+                     dist_col = pairDistVal, 
+                     exact_col= exactVal, 
+                     propensity_col = psCols, 
+                     ignore_col = c(responseVal), 
+                     max_unmatched = 0.1, caliper_option=NULL, 
+                     tol=1e-1, max_iter=0, rho_max_factor = 10)
 
 ## 1. Tabular summary function works
 test_that("Tabular summary function test", {
-  matching_comparison <- compareMatching(res1)
-  matching_comparison_full <- compareMatching(res1, display.all = FALSE)
-  matching_comparison_partial <- compareMatching(res1, covList = c("age", "married"))
+  matching_comparison <- compare_matching(res1)
+  matching_comparison_full <- compare_matching(res1, display_all = FALSE)
+  matching_comparison_partial <- compare_matching(res1, cov_list = c("age", "married"))
   expect_equal(class(matching_comparison), "data.frame")
   expect_equal(class(matching_comparison_full), "data.frame")
   expect_equal(class(matching_comparison_partial), "data.frame")
@@ -29,7 +35,7 @@ test_that("Tabular summary function test", {
 
 ## 2. Test the function that generate the objective function values and penalty
 test_that("Objective function summary", {
-  summary_table <- generateRhoObj(res1)
+  summary_table <- get_rho_obj(res1)
   expect_equal(dim(summary_table)[1], 20)
   expect_equal(dim(summary_table)[2], 7)
 })

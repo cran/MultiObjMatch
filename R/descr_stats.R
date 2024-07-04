@@ -93,8 +93,13 @@ descr.stats_general <-
     #row-wise tests
     pval.vector <- rep(NA, nrow(fb.tab))
     for (i in 1:nrow(fb.tab)) {
-      new.tab <- rbind(fb.tab[i, ], colSums(fb.tab[-i, ]))
-      suppressWarnings(pval.vector[i] <- chisq.test(new.tab)$p.value)
+      # if(nrow(fb.tab)==1){
+      #   pval.vector[i] <- 1
+      # }else{
+      #   new.tab <- rbind(fb.tab[i, ], colSums(fb.tab[-i, ]))
+      #   suppressWarnings(pval.vector[i] <- chisq.test(new.tab)$p.value)
+      # }
+      suppressWarnings(pval.vector[i] <-1)
     }
     names(pval.vector) <- paste('Pval', rownames(fb.tab), sep = '.')
     

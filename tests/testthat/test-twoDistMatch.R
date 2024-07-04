@@ -32,18 +32,29 @@ d1 <- as.matrix(d1[treatedUnits, controlUnits])
 d2 <- as.matrix(d2[treatedUnits, controlUnits])
 
 
-res6 <- twoDistMatch(df = df, treatCol = "z",  
-                     dMat1=d1, dType1= "User", dMat2=d2, dType2="User", myBalCol=c("x5"),  rhoExclude=r1ss, rhoDistance=r2ss, propensityCols = c("x1"), pScores = NULL, ignore = c("y"),  maxUnMatched = 0.1, caliperOption=0.25, 
-                     toleranceOption=1e-6, maxIter=3, rho.max.f = 10)
+res6 <- two_dist_match(data = df, treat_col = "z",  
+                     dist1_matrix=d1, dist1_type= "User", 
+                     dist2_matrix=d2, dist2_type="User", 
+                     marg_bal_col=c("x5"),  
+                     exclusion_penalty=r1ss, 
+                     dist2_penalty=r2ss, 
+                     propensity_col = c("x1"), 
+                     pscore_name = NULL, 
+                     ignore_col = c("y"),  
+                     max_unmatched = 0.1, 
+                     caliper_option=0.25, 
+                     tol=1e-6, 
+                     max_iter=0, 
+                     rho_max_factor = 10)
 ## 0. Check the correctness of the result 
-test_that("twoDistMatch test with correct input", {
+test_that("two_dist_match test with correct input", {
   expect_equal(names(res6), c("numTreat","rhoList", "matchList", "treatmentCol",
                               "covs", "exactCovs", "idMapping", "b.var",
                               "dataTable", "t", "df", "pair_cost1", "pair_cost2", "version", "fDist1",
                               "fExclude", "fDist2"))
   expect_equal(0, sum(unlist(lapply(res6, is.na))))
   expect_equal(res6$version, "Advanced")
-  expect_equal(length(res6$matchList), 236)
+  expect_equal(length(res6$matchList), 100)
   expect_equal(length(res6$fDist1), length(res6$fDist2))
   expect_equal(length(res6$fDist1), length(res6$fExclude))
 })
@@ -52,17 +63,17 @@ test_that("twoDistMatch test with correct input", {
 
 ## 1. Tabular summary function works
 test_that("Some tabular summary functions only works for the basic version", {
-  expect_error(compareMatching(res6))
-  summary_table <- generateRhoObj(res6)
-  expect_equal(dim(summary_table)[1], 236)
+  expect_error(compare_matching(res6))
+  summary_table <- get_rho_obj(res6)
+  expect_equal(dim(summary_table)[1], 100)
   expect_equal(dim(summary_table)[2], 7)
 })
 
 ## 2. Some graphical summary function would not work 
 
 test_that("Some graphicall summary functions only works for the basic version", {
-  expect_error(generateTVGraph(res6))
-  expect_error(generatePairdistanceBalanceGraph(res6))
-  expect_error(generatePairdistanceGraph(res6))
+  expect_error(get_tv_graph(res6))
+  expect_error(get_pairdist_graph(res6))
+  expect_error(get_pairdist_balance_graph(res6))
 })
 

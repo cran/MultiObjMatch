@@ -5,11 +5,11 @@
 \title{An internal helper function that translates the matching index in the sorted
 data frame to the original dataframe's row index}
 \usage{
-convert_index(matchingResult)
+convert_index(matching_result)
 }
 \arguments{
-\item{matchingResult}{an object returned by the main matching function
-distBalMatch}
+\item{matching_result}{an object returned by the main matching function
+dist_bal_match}
 }
 \description{
 An internal helper function that translates the matching index in the sorted

@@ -1,3 +1,8 @@
+# MultiObjMatch 1.0.0 (2024-06-20)
+* Change the naming conventions.
+* Updated the paper code.
+
+
 # MultiObjMatch 0.1.3 (2023-11-19) 
 * Change the auto-grid search algorithm in the package. 
 

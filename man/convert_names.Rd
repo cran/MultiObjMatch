@@ -4,12 +4,14 @@
 \alias{convert_names}
 \title{Internal helper function that converts axis name to internal variable name}
 \usage{
-convert_names(x, y)
+convert_names(x, y, z = NULL)
 }
 \arguments{
 \item{x}{the user input character for x-axis value}
 
 \item{y}{the user input character for y-axis value}
+
+\item{z}{the user input character for z-axis value}
 }
 \value{
 a named list with variable names for visualization for internal use

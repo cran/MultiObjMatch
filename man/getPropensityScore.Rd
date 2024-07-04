@@ -4,10 +4,10 @@
 \alias{getPropensityScore}
 \title{Fit propensity scores using logistic regression.}
 \usage{
-getPropensityScore(df, covs)
+getPropensityScore(data, covs)
 }
 \arguments{
-\item{df}{dataframe that contains a column named "treat", the treatment
+\item{data}{dataframe that contains a column named "treat", the treatment
 vector, and columns of covariates specified.}
 
 \item{covs}{factor of column names of covariates used for fitting a

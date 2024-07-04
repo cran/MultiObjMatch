@@ -5,11 +5,11 @@
 \title{An internal helper function that gives the index of matching with a wide
 range of number of treated units left unmatched}
 \usage{
-get_five_index(matchingResult)
+get_five_index(matching_result)
 }
 \arguments{
-\item{matchingResult}{an object returned by the main matching function
-distBalMatch}
+\item{matching_result}{an object returned by the main matching function
+dist_bal_match}
 }
 \value{
 a vector of five matching indices with the number of treated units
